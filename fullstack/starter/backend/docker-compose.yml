@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=taskboard
+      - DB_USERNAME=taskboard
+      - DB_PASSWORD=password
+    volumes:
+      - ./src:/var/www/html:cached
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: taskboard
+      POSTGRES_USER: taskboard
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
