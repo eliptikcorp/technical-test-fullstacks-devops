@@ -1,7 +1,7 @@
 # Test Technique – Fullstack (Complexifié)
 
 ## 🎯 Objectif
-Évaluer la capacité du candidat à concevoir et implémenter une application réelle où la **logique métier est non triviale**, les **données initiales sont imparfaites**, et où il faut **prendre des décisions d'architecture** (API, WebSocket, nettoyage des données). L'objectif est d'empêcher une résolution complète automatique par IA et de mesurer compréhension, rigueur et créativité.
+Évaluer la capacité du candidat à concevoir et implémenter une application réelle où la **logique métier est non triviale**, les **données initiales sont imparfaites**, et où il faut **prendre des décisions d'architecture** (API, WebSocket, nettoyage des données).
 
 ---
 
