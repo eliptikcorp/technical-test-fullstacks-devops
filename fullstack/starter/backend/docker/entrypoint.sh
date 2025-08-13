@@ -1,10 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
-# Générer la clé si absente
-if [ -f /var/www/html/.env ]; then
-  php artisan key:generate || true
-fi
 
 # Attente DB simple (retry)
 RETRIES=15
@@ -13,5 +9,7 @@ until php artisan migrate --force || [ $RETRIES -le 0 ]; do
   RETRIES=$((RETRIES-1))
   sleep 2
 done
+
+php artisan serve --host=0.0.0.0 --port=80 &
 
 exec "$@"

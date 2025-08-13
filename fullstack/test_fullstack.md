@@ -37,21 +37,20 @@ Fournis :
    - `Manager` peut forcer clôture et réassignations.
 
 ---
-
 ## 🧪 Jeu de données initial (imparfait)
-Fournis un fichier `seed_data.json` (ou SQL) qui contient :
-- Entrées avec doublons (2 utilisateurs avec même email).
-- Tâches avec champs manquants (ex: `due_date: null`, `estimated_hours: "n/a"`).
-- Références circulaires intentionnelles (A dépend de B, B dépend de A) — tu dois détecter et corriger ces cycles lors de l'import.
+Les données initiales sont déjà intégrées dans les seeders Laravel existants. Ces données incluent :
+- Entrées avec doublons (ex : 2 utilisateurs avec le même email).
+- Tâches avec champs manquants (ex : `due_date: null`, `estimated_hours: "n/a"`).
+- Références circulaires intentionnelles (ex : A dépend de B, B dépend de A).
 
 Le candidat doit :
-- Écrire un script d'import qui nettoie les données (déduplication, normalisation, correction des types).
+- Nettoyer les seeders existants pour garantir la conformité des données avec la base de données (déduplication, normalisation, correction des types).
 - Décrire dans le README les décisions prises pour nettoyer les cas ambigus.
 
 ---
 
 ## 📡 Endpoints (partiels — compléter)
-On fournit quelques endpoints de base; le candidat doit compléter les endpoints manquants et documenter la spec OpenAPI (ou un fichier `api.md`).
+On fournit quelques endpoints de base; le candidat doit compléter les endpoints manquants et fournir une documentation claire.
 
 Endpoints fournis (exemples) :
 - `GET /tasks`
@@ -65,7 +64,7 @@ Endpoints fournis (exemples) :
 - `GET /tasks?assigned_to=<user>&status=<status>&priority_gt=<n>`
 - Endpoint pour journal d'événements `GET /events?task_id=...`
 
-Le candidat doit fournir une spec claire (Swagger/OpenAPI minimal ou `api.md`), et au moins 3 tests d'intégration sur endpoints critiques.
+Le candidat doit fournir une documentation Postman ou OpenAPI (au choix) pour les endpoints critiques.
 
 ---
 
@@ -75,16 +74,16 @@ Le candidat doit fournir une spec claire (Swagger/OpenAPI minimal ou `api.md`), 
   - Nouvelle assignation
   - Nouvel événement dans le journal
 
-Le frontend doit s'abonner et mettre à jour l'UI en direct.
+Le candidat est libre de choisir et configurer la solution technique pour la communication en temps réel.
 
 ---
 
 ## 🧰 Contraintes techniques
 - Utiliser JWT pour l'authentification.
 - Dockeriser l'app (backend + frontend + DB) via `docker-compose`.
-- Fournir des scripts : `./scripts/import_seed.sh`, `./scripts/start.sh`.
+- Fournir une configuration Docker complète pour lancer l'application.
 - Commits réguliers et explicites : on évaluera la granularité et la qualité des messages.
-- Fournir un diagramme simple (ERD ou sequence) dans `docs/diagram.png` ou `docs/diagram.svg`.
+- Fournir un diagramme simple (ERD ou sequence) dans `docs/diagram.png` ou `docs/diagram.svg`, créé par le candidat.
 
 ---
 

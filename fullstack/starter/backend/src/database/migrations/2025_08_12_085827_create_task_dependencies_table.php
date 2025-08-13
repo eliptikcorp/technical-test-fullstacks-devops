@@ -12,8 +12,8 @@ class CreateTaskDependenciesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('task_id');
             $table->unsignedBigInteger('dependency_id');
-            $table->foreign('task_id')->references('id')->on('task')->onDelete('cascade');
-            $table->foreign('dependency_id')->references('id')->on('task')->onDelete('cascade');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreign('dependency_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
     }

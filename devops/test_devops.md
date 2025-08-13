@@ -15,10 +15,9 @@ Tu dois prendre un projet "starter" (fourni) et construire une **chaîne CI/CD**
 - Fournir `docker-compose.yml` qui lance :
   - app (API)
   - DB (Postgres ou MySQL)
-  - reverse proxy (nginx)
-  - outil de monitoring léger (Prometheus + Grafana container, ou Netdata)
+- Optionnel : Ajouter un reverse proxy (nginx) ou un outil de monitoring léger (Prometheus + Grafana container, ou Netdata).
 - S'assurer que :
-  - Les volumes persistant sont configurés.
+  - Les volumes persistants sont configurés.
   - Les `.env` ne sont pas commit.
   - Un fichier `env.example` documente les variables nécessaires.
 
@@ -34,6 +33,7 @@ Tu dois prendre un projet "starter" (fourni) et construire une **chaîne CI/CD**
   - Lint le code
   - Lance les tests unitaires
   - Build les images Docker
+  - Exécute le script `scripts/deploy_local.sh` pour simuler un déploiement local
   - Scanne les vulnérabilités (ou exécute `trivy`/`act` basic check`) — si impossible, documenter l'approche
 - Le workflow doit être déclenchable sur PR.
 
@@ -60,17 +60,17 @@ Tu dois prendre un projet "starter" (fourni) et construire une **chaîne CI/CD**
 - Fournir instructions pour reproduire le déploiement.
 
 **Critères :**
-- Automatisation reproducible
-- Manifesting & atomic switch (symlink) pour simuler gradual cutover
-- Rollback simple et testé
+- Automatisation reproducible.
+- Manifesting & atomic switch (symlink) pour simuler gradual cutover.
+- Rollback simple et testé.
 
 ---
 
 ## 📈 Exercice 4 — Observabilité & Alerting
-- Fournir un docker-compose ou instructions GitHub Actions qui démarre (ou simule) :
+- Fournir un docker-compose ou instructions GitHub Actions qui démarre :
   - Metrics exposition (Prometheus scrape target)
-  - Grafana dashboard minimal (CPU, Memory, uptime, endpoint health)
-  - Logging centralisé (optionnel : vector, fluentd, filebeat → loki)
+  - Documentation pour configurer un dashboard Grafana minimal (CPU, Memory, uptime, endpoint health).
+- Optionnel : Logging centralisé (vector, fluentd, filebeat → loki).
 - Décrire dans `README.md` les règles d'alerte critiques (ex: `error rate > X`, `latency > Yms`, `DB connections > Z`).
 
 **Critères :**
@@ -85,29 +85,30 @@ Répondre dans `answers.md` (format markdown) aux questions :
 2. Décrire une procédure de rollback en cas de déploiement défectueux.
 3. Comment monitoreriez-vous une augmentation soudaine du 500 Errors ?
 4. Comment automatiser les migrations DB dans un pipeline sûr ?
+5. Décrire une procédure pour gérer une panne critique où la base de données devient inaccessible. Inclure les étapes de diagnostic, résolution, et prévention future.
 
 ---
 
 ## 📋 Livrables attendus
-- `docker-compose.yml` + `deploy/` scripts
-- `.github/workflows/ci.yml` (et `cd.yml` si pertinent)
-- `README.md` avec instructions pour exécuter localement et en environnement éphémère
-- `answers.md` réponses aux questions
-- PR vers le repo central / fork PR
+- `docker-compose.yml` + `deploy/` scripts.
+- `.github/workflows/ci.yml` (et `cd.yml` si pertinent).
+- `README.md` avec instructions pour exécuter localement et en environnement éphémère.
+- `answers.md` réponses aux questions.
+- PR vers le repo central / fork PR.
 
 ---
 
 ## ⏱ Temps recommandé
-- 6 à 10 heures réalistes selon expertise
+- 10 à 12 heures réalistes selon expertise.
 
 ---
 
 ## 📊 Barème & Critères d'évaluation
-- Dockerisation & persistance : 25%
-- CI (qualité des workflows) : 30%
-- Simulated CD (manifests, symlink, rollback) : 20%
-- Observabilité & alerting : 15%
-- Documentation & réponses (answers.md) : 10%
+- Dockerisation & persistance : 25%.
+- CI (qualité des workflows) : 30%.
+- Simulated CD (manifests, symlink, rollback) : 20%.
+- Observabilité & alerting : 15%.
+- Documentation & réponses (answers.md) : 10%.
 
 ---
 
@@ -122,7 +123,7 @@ Répondre dans `answers.md` (format markdown) aux questions :
 
 ### ✅ Évaluation Git/GitHub (transversal)
 Dans les deux tests, tu seras noté aussi sur :
-- Qualité et granularité des commits
-- Usage de branches (feature branches, PR)
-- Clarté du README et du PR description
-- Capacité à répondre aux commentaires de code review (si interaction réelle proposée)
+- Qualité et granularité des commits.
+- Usage de branches (feature branches, PR).
+- Clarté du README et du PR description.
+- Capacité à répondre aux commentaires de code review (si interaction réelle proposée).

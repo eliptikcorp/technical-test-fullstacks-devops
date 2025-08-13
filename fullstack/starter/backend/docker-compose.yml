@@ -1,10 +1,9 @@
 services:
   app:
     build: .
-    ports:
-      - "9000:9000"
-    depends_on:
-      - db
+    volumes:
+      - ./src:/var/www/html:cached
+      - /var/www/html/vendor
     environment:
       - DB_CONNECTION=pgsql
       - DB_HOST=db
@@ -12,8 +11,11 @@ services:
       - DB_DATABASE=taskboard
       - DB_USERNAME=taskboard
       - DB_PASSWORD=password
-    volumes:
-      - ./src:/var/www/html:cached
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+
   db:
     image: postgres:15
     environment:
