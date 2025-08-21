@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Remove obsolete version key
 
 services:
