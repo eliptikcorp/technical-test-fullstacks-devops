@@ -1,0 +1,16 @@
+# Exclude unnecessary files from the Docker build context
+node_modules
+**/node_modules
+npm-debug.log*
+yarn-error.log*
+.git
+.gitignore
+.env
+.env.*
+coverage
+build
+dist
+Dockerfile*
+docker-compose.yml
+test
+tests
