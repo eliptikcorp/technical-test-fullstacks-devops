@@ -1,5 +1,7 @@
 version: '3.8'
 
+# Remove obsolete version key
+
 services:
   api:
     build: ./api
@@ -57,6 +59,21 @@ services:
     tmpfs:
       - /var/cache/nginx
       - /var/run
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
 
 volumes:
   pgdata:
