@@ -1,9 +1,32 @@
+version: '3.8'
+
 services:
-  app:
-    build: .
+  db:
+    image: postgres:15
+    container_name: taskboard-db
+    environment:
+      POSTGRES_USER: taskboard
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: taskboard
+    ports:
+      - "5432:5432"
     volumes:
-      - ./src:/var/www/html:cached
-      - /var/www/html/vendor
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: taskboard-backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py loaddata seed_data.json &&
+             python manage.py runserver 0.0.0.0:8000"
+             #python manage.py daphne 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
     environment:
       - DB_CONNECTION=pgsql
       - DB_HOST=db
@@ -11,21 +34,6 @@ services:
       - DB_DATABASE=taskboard
       - DB_USERNAME=taskboard
       - DB_PASSWORD=password
-    depends_on:
-      - db
-    ports:
-      - "8000:80"
-
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: taskboard
-      POSTGRES_USER: taskboard
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:
