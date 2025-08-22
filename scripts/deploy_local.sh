@@ -124,6 +124,9 @@ for i in {1..30}; do
   echo "[deploy_local] retry $i..."
   if [ "$i" = "30" ]; then
     echo "[deploy_local] Healthcheck failed after retries" >&2
+    echo "[deploy_local] Dumping diagnostics (docker compose ps/logs)" >&2
+    docker compose -f "$ROOT_DIR/deploy/current/docker-compose.yml" ps || true
+    docker compose -f "$ROOT_DIR/deploy/current/docker-compose.yml" logs --no-color --tail=200 || true
     exit 1
   fi
 done
