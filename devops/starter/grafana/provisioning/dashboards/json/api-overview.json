@@ -25,21 +25,142 @@
   "panels": [
     {
       "type": "stat",
-      "title": "HTTP 200 rate",
-      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 7},
+      "title": "API Health",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
       "targets": [
         {
           "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
-          "expr": "sum(rate(http_requests_total{status=\"200\"}[1m]))",
+          "expr": "up{job=\"api\"}",
+          "legendFormat": "Status",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {"options": {"0": {"text": "DOWN", "color": "red"}}, "type": "value"},
+            {"options": {"1": {"text": "UP", "color": "green"}}, "type": "value"}
+          ],
+          "thresholds": {
+            "steps": [
+              {"color": "red", "value": 0},
+              {"color": "green", "value": 1}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "HTTP 200 rate",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "sum(rate(http_requests_total{status=\"200\"}[5m]))",
           "legendFormat": "200/s",
           "refId": "A"
         }
       ]
     },
     {
-      "type": "graph",
+      "type": "stat",
+      "title": "CPU Usage",
+      "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "rate(process_cpu_user_seconds_total{job=\"api\"}[5m]) + rate(process_cpu_system_seconds_total{job=\"api\"}[5m])",
+          "legendFormat": "CPU",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Memory Usage",
+      "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "process_resident_memory_bytes{job=\"api\"}",
+          "legendFormat": "RSS",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 4},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "time() - process_start_time_seconds{job=\"api\"}",
+          "legendFormat": "Uptime",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU & Memory Over Time",
+      "gridPos": {"x": 12, "y": 4, "w": 12, "h": 4},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "rate(process_cpu_user_seconds_total{job=\"api\"}[5m]) + rate(process_cpu_system_seconds_total{job=\"api\"}[5m])",
+          "legendFormat": "CPU Usage",
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
+          "expr": "process_resident_memory_bytes{job=\"api\"} / 1024 / 1024",
+          "legendFormat": "Memory (MB)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "CPU Usage"},
+            "properties": [
+              {"id": "unit", "value": "percentunit"},
+              {"id": "max", "value": 1}
+            ]
+          },
+          {
+            "matcher": {"id": "byName", "options": "Memory (MB)"},
+            "properties": [
+              {"id": "unit", "value": "short"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "timeseries",
       "title": "Request duration (p95)",
-      "gridPos": {"x": 0, "y": 7, "w": 24, "h": 8},
+      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8},
       "targets": [
         {
           "datasource": {"type": "prometheus", "uid": "PBFA97CFB590B2093"},
@@ -48,8 +169,17 @@
           "refId": "A"
         }
       ],
-      "lines": true,
-      "linewidth": 2
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi", "sort": "none"}
+      }
     }
   ],
   "refresh": "10s",

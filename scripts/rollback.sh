@@ -19,7 +19,12 @@ fi
 
 current_target=""
 if [ -L "$CURRENT_LINK" ]; then
-  current_target="$(readlink -f "$CURRENT_LINK" || true)"
+  # Resolve symlink to absolute
+  if command -v realpath >/dev/null 2>&1; then
+    current_target="$(realpath "$CURRENT_LINK")"
+  else
+    current_target="$(readlink -f "$CURRENT_LINK" || readlink "$CURRENT_LINK" || echo)"
+  fi
 fi
 
 idx=-1
@@ -40,7 +45,13 @@ target="$RELEASES_DIR/${releases[$prev_index]}"
 echo "[rollback] Switching current -> $target"
 ln -sfn "$target" "$CURRENT_LINK"
 
-echo "[rollback] Restarting stack"
-docker compose -f "$ROOT_DIR/deploy/docker-compose.yml" up -d
+compose_file="$CURRENT_LINK/docker-compose.yml"
+if [ ! -f "$compose_file" ]; then
+  echo "[rollback] Compose file not found in current release: $compose_file" >&2
+  exit 1
+fi
+
+echo "[rollback] Restarting stack from $compose_file"
+docker compose -f "$compose_file" up -d
 
 echo "[rollback] Done"

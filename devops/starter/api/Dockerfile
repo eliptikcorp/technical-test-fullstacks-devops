@@ -5,7 +5,7 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 # Install only production dependencies for a smaller image
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # ---- Runner stage ----
 FROM node:20-alpine AS runner

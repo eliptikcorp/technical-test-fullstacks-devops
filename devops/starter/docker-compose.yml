@@ -64,12 +64,14 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules.yml:/etc/prometheus/rules/rules.yml:ro
+      - prom_data:/prometheus
     depends_on:
       api:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
-    read_only: true
+    # removed read_only to allow TSDB writes
     tmpfs:
       - /tmp
 
@@ -83,14 +85,16 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
     depends_on:
       prometheus:
         condition: service_started
     security_opt:
       - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /tmp
+    # removed read_only (Grafana needs to write to /var/lib/grafana)
+    # removed tmpfs for /tmp
 
 volumes:
   pgdata:
+  prom_data:
+  grafana_data:
