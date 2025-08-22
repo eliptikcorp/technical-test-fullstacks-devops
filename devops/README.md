@@ -72,3 +72,40 @@ La stack Grafana/Prometheus est incluse dans `devops/starter/docker-compose.yml`
 ## CI — Scan de vulnérabilités (Exercice 2)
 Un job Trivy (non-bloquant) existe dans le workflow: `.github/workflows/ci.yml`.
 - Détails, exécution locale et bonnes pratiques: `docs/ci-vuln-scan.md`.
+
+## ☁️ Environnements Éphémères
+
+### GitHub Codespaces
+1. **Ouvrir dans Codespaces :**
+   - Depuis GitHub : "Code" → "Codespaces" → "Create codespace on develop"
+   - URL directe : https://github.com/codespaces/new?hide_repo_select=true&ref=develop
+
+2. **Démarrer automatiquement :**
+   ```bash
+   docker compose -f devops/starter/docker-compose.yml up -d
+   ```
+
+3. **Accès aux services :**
+   - Ports forwardés automatiquement par Codespaces
+   - API : https://<id>-8080.app.github.dev
+   - Grafana : https://<id>-3001.app.github.dev
+
+### Gitpod
+1. **URL d'accès :**
+   ```
+   https://gitpod.io/#https://github.com/W4Ro/technical-test-fullstacks-devops/tree/develop
+   ```
+
+2. **Configuration automatique :** 
+   - Services lancés via `.gitpod.yml`
+   - Ports exposés automatiquement
+
+### Railway / Render (Déploiement Cloud)
+1. **Variables d'environnement :** Utiliser `.env.example` comme référence
+2. **Build :** `docker build -f devops/starter/api/Dockerfile devops/starter/api`
+3. **Port :** 3000 (API Node.js)
+
+## 📊 URLs de Test
+- **Health check :** `curl https://<url>/health`
+- **Métriques :** `curl https://<url>/metrics`
+- **Ping :** `curl https://<url>/ping`
