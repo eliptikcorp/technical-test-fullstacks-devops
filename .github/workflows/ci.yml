@@ -45,6 +45,7 @@ jobs:
         with:
           node-version: 20.x
           cache: npm
+          cache-dependency-path: devops/starter/api/package-lock.json
       - name: Install deps
         run: npm install
       - name: Run ESLint
@@ -64,6 +65,7 @@ jobs:
         with:
           node-version: 20.x
           cache: npm
+          cache-dependency-path: devops/starter/api/package-lock.json
       - name: Install deps
         run: npm install
       - name: Run tests
