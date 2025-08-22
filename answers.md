@@ -318,6 +318,6 @@ npm run test:integration:prod
 - SLA de récupération : RTO=30min, RPO=15min
 - Tests de disaster recovery mensuels
 
-## 6. Références & Lancements rapides
+## Annexe — Références & Lancements rapides
 
 - Observabilité & Alerting (Exo 4): voir docs/exo4-observabilite.md pour le pas-à-pas (démarrage stack, accès Grafana/Prometheus, dashboard, alertes, playbook).
