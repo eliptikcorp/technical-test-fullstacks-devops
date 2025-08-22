@@ -21,3 +21,12 @@ build/
 # Deploy artifacts
 deploy/releases/
 deploy/current
+
+# Claude Code temporary files
+.claude/
+CLAUDE.md
+
+# OS specific
+Thumbs.db
+*.tmp
+*.log
