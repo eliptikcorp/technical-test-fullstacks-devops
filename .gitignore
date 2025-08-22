@@ -1,0 +1,32 @@
+# Global
+.DS_Store
+.idea/
+.vscode/
+
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Env files (never commit secrets)
+.env
+.env.*
+
+# Build outputs / coverage
+coverage/
+dist/
+build/
+
+# Deploy artifacts
+deploy/releases/
+deploy/current
+
+# Claude Code temporary files
+.claude/
+CLAUDE.md
+
+# OS specific
+Thumbs.db
+*.tmp
+*.log

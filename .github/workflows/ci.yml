@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'devops/starter/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'devops/starter/**'
+      - 'scripts/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dockerfile-lint:
+    name: Lint Dockerfile (Hadolint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run hadolint on API Dockerfile
+        run: |
+          docker run --rm -i hadolint/hadolint < devops/starter/api/Dockerfile
+
+  js-lint:
+    name: Lint JS (ESLint)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: devops/starter/api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: devops/starter/api/package-lock.json
+      - name: Install deps
+        run: npm install
+      - name: Run ESLint
+        run: npm run lint
+
+  npm-test:
+    name: Tests Node (Jest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: devops/starter/api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: devops/starter/api/package-lock.json
+      - name: Install deps
+        run: npm install
+      - name: Run tests
+        run: npm test -- --ci
+
+  build-image:
+    name: Build Docker image (API)
+    runs-on: ubuntu-latest
+    needs: [ js-lint ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f devops/starter/api/Dockerfile -t starter-api:${{ github.sha }} devops/starter/api
+
+  vuln-scan:
+    name: Vulnerability scan (Trivy FS - non-bloquant)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Trivy filesystem scan (HIGH/CRITICAL, non-bloquant)
+        continue-on-error: true
+        run: |
+          docker run --rm -v $PWD:/src -w /src aquasec/trivy:latest fs \
+            --no-progress \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            .
+      - name: Trivy image scan (HIGH/CRITICAL, non-bloquant)
+        continue-on-error: true
+        run: |
+          docker build -f devops/starter/api/Dockerfile -t starter-api:${{ github.sha }} devops/starter/api
+          docker run --rm aquasec/trivy:latest image --severity HIGH,CRITICAL --ignore-unfixed --no-progress starter-api:${{ github.sha }}
+
+  deploy-local:
+    name: Execute scripts/deploy_local.sh (simulate local deploy)
+    runs-on: ubuntu-latest
+    needs: [ npm-test, dockerfile-lint, js-lint, build-image ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy local (script)
+        run: bash scripts/deploy_local.sh
+      - name: Tear down
+        if: always()
+        run: |
+          docker compose -f deploy/current/docker-compose.yml down -v || true

@@ -2,8 +2,10 @@ const request = require('supertest');
 const { app, server } = require('../index');
 
 afterAll(() => {
-  // Arrêter le serveur après les tests
-  server.close();
+  // Arrêter le serveur après les tests si il existe
+  if (server) {
+    server.close();
+  }
 });
 
 describe('API Endpoints', () => {
